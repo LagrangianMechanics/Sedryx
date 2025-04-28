@@ -104,7 +104,7 @@ Its emphasis on first-class circuits, compositionality, and minimal but powerful
 
 Whether you are experimenting with simple entanglement circuits or building the foundation for larger quantum algorithms, Sedryx strives to make the process elegant, intuitive, and fun.
 
-Philosophy
+# Philosophy
 
 Sedryx is a lightweight quantum circuit construction library designed around the principles of composability, clarity, and expressiveness.
 Rather than being a full quantum computing platform, Sedryx focuses narrowly on the creative process of building and manipulating circuits, treating circuits themselves as first-class objects.
