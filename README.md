@@ -103,3 +103,52 @@ Sedryx aims to provide a lightweight, expressive, and modular foundation for qua
 Its emphasis on first-class circuits, compositionality, and minimal but powerful abstractions offers a fresh, flexible approach to designing quantum algorithms.
 
 Whether you are experimenting with simple entanglement circuits or building the foundation for larger quantum algorithms, Sedryx strives to make the process elegant, intuitive, and fun.
+
+Philosophy
+
+Sedryx is a lightweight quantum circuit construction library designed around the principles of composability, clarity, and expressiveness.
+Rather than being a full quantum computing platform, Sedryx focuses narrowly on the creative process of building and manipulating circuits, treating circuits themselves as first-class objects.
+
+This philosophy is grounded in a few key ideas:
+
+1. Circuits as First-Class Citizens
+In Sedryx, circuits can be reused, composed, and embedded into larger circuits as easily as gates.
+A user can define a Bell state circuit once, and apply it multiple times within larger designs without redundancy or loss of structure.
+This mirrors the natural way that quantum algorithms often reuse subroutines, and encourages modular thinking.
+
+# Define a Bell state
+bell = Circuit(2)
+x, y = bell.all_bits()
+x >> H
+(x & y) >> Cnot
+
+# Reuse Bell state twice
+example = Circuit(4)
+a, b, c, d = example.all_bits()
+(a & b) >> bell
+(c & d) >> bell
+2. Natural Syntax for Composition
+Sedryx emphasizes minimal, intuitive operators to build circuits:
+
+>> applies gates (or circuits) to bits.
+& groups bits or gates together for multi-arity operations.
+These operators encourage a point-free style of programming when desired, allowing circuits to be defined concisely without explicit reference to individual bits.
+
+# Point-free Bell state definition
+bell = (H & I) >> Cnot
+This accidental discovery of point-free circuit composition highlights the expressive potential of the model: powerful abstractions arise naturally from a small set of consistent rules.
+
+3. Clear Treatment of Qubits and Classical Bits
+Sedryx provides a unified way to specify both quantum and classical bits when building a circuit.
+Bits are displayed in the order they are defined, allowing full control over circuit layout, and hidden bits can be used when needed for internal computation without cluttering the visual representation.
+
+This explicit bit management supports fine-grained control without sacrificing simplicity.
+
+4. Focus on Expressive, Readable Diagrams
+While visualization tools in Sedryx are currently basic, they prioritize readability and natural mapping from syntax to diagram.
+Circuit outputs are designed to be interpretable at a glance, both in plain text and SVG formats (ideal for Jupyter environments).
+
+This supports the broader aim of making quantum circuits as intuitive to construct and interpret as possible.
+
+Sedryx is an evolving project and does not aim to compete directly with large-scale quantum frameworks.
+Instead, it aspires to contribute ideas toward making quantum programming simpler, more modular, and more expressive, and to inspire future development in the field.
