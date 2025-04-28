@@ -1,154 +1,124 @@
-# Sedryx
+**Sedryx**  
+*A Python Library for First-Class Quantum Circuit Construction*  
 
-Sedryx is a Python library designed to enable the creation, manipulation, and visualization of quantum circuits with simplicity and expressiveness.
-It introduces a system where circuits themselves are treated as first-class citizens, allowing modular, composable quantum programming with a focus on clarity, reusability, and creativity.
+---
 
-Sedryx is currently focused on the construction of quantum circuits. Future versions will incorporate simulation backends, enabling execution on professional-grade quantum circuit simulators, while maintaining the same elegant interface.
+Sedryx is a lightweight, expressive framework designed to treat quantum circuits as first-class citizens in Python. Inspired by functional programming idioms and operator overloading, Sedryx enables you to build, compose, and visualize quantum circuits with concise, natural syntax. Although a simulator backend is still under development, Sedryx seamlessly integrates with popular Python-based quantum simulators in the near future.
 
-Installation
+## Key Concepts and Design Philosophy
 
-Sedryx is currently in development. Installation instructions will be provided with the first release.
-Core Concepts
+1. **Circuits as Objects**  
+   Every `Circuit` in Sedryx is a reusable object. Once defined, circuits may be applied like gates, combined, or even nested without manual re-construction of their internal structure.
 
-Sedryx's design philosophy revolves around a small number of powerful primitives:
+2. **Operator Overloading for Clarity**  
+   - **`>>`** applies a bit, bit group, or circuit to a gate.  
+   - **`&`** groups bits or composes circuits/gates in parallel.  
+   - **Lists** allow sequential application of multiple gates to the same bit.  
 
-Bits (qubits and classical bits) are the fundamental building blocks.
-BitGroups enable multi-qubit operations through intuitive grouping.
-Circuits are first-class objects and can be reused, composed, and treated as gates themselves.
-Operators like >> and & provide a natural, fluid syntax for building circuits.
-Creating Circuits
+3. **Flexible Bit Naming and Ordering**  
+   - Positional arguments (integers) or explicit labels (strings) name qubits and classical bits.  
+   - Negative integers designate classical bits; floats and trailing semicolons (`;`) mark hidden bits for indented display.  
+   - The order of specification determines the layout in visualizations.
 
-A circuit is created by specifying its bits either by number or by name:
+4. **Extensibility via `.as_gate()`**  
+   Convert any circuit into a gate object with a custom name, enabling higher-order circuit design (e.g., defining parameterized transforms like QFT).
 
-from sedryx import Circuit, H, Cnot
+## Installation
 
-# Create a Bell state
+```bash
+pip install sedryx
+```
+
+*Note: A simulation backend is forthcoming; currently, Sedryx focuses on circuit construction and visualization.*
+
+## Quick Start
+
+```python
+from sedryx import Circuit, H, X, Z, Cnot, I
+
+# 1. Create a Bell pair
 bell = Circuit(2)
-x, y = bell.all_bits()
-x >> H
-(x & y) >> Cnot
-Alternatively, you can name bits explicitly:
+q0, q1 = bell.all_bits()
+q0 >> H
+(q0 & q1) >> Cnot
 
-bell = Circuit('x', 'y')
-To include classical bits, simply prefix the name with ':', or use negative integers:
-
-# Two qubits and one classical bit
-circuit = Circuit('x', 'y', ':c')
-
-# Equivalent:
-circuit = Circuit(2, -1)
-Hidden bits (useful for intermediate computations) can also be created:
-
-By appending ';' to a name, such as 'qh;'
-By using floats instead of integers, such as 2.0
-Hidden bits appear indented in the circuit diagram, distinguishing them from visible bits.
-
-Gates, BitGroups, and Operators
-
-In Sedryx, gates are applied using the >> operator:
-
-x >> H
-(x & y) >> Cnot
-& groups multiple bits into a BitGroup, allowing multi-bit gates.
-Multiple gates can be applied in sequence by passing a list:
-x >> (H, X, Z)
-Circuits themselves can be applied to groups of bits:
-
+# 2. Reuse the Bell circuit in a 4-qubit circuit
 example = Circuit(4)
 a, b, c, d = example.all_bits()
 (a & b) >> bell
 (c & d) >> bell
-Thus, a circuit can behave like a reusable subroutine, with its structure seamlessly integrated into larger designs.
 
-If one wishes to treat a circuit purely as a gate (without revealing its internal structure), the .as_gate method can be used:
-
+# 3. Treat the Bell circuit as a gate
 bell_gate = bell.as_gate('Bell')
 (a & b) >> bell_gate
-This capability encourages the modular construction of complex circuits from smaller, understandable components.
+```
 
-Circuit Composition
+## Core API
 
-Sedryx provides powerful composition tools:
+### `Circuit(*bits)`
+- **Arguments**:  
+  - Positive `int` or `str` for qubits;  
+  - Negative `int` or `str` prefixed with `':'` for classical bits;  
+  - `float` or trailing semicolon (`'name;'`) to mark hidden bits.
+- **Returns**: A new `Circuit` object.
 
-Sequential composition: A >> B applies gate (or circuit) A followed by B to the same bits.
-Parallel composition: A & B places gates (or circuits) side-by-side on separate bits.
-For example:
-
-# Create a simple parallel gate
-H & X
-These operations enable point-free circuit definitions, where bits need not be explicitly referenced:
-
-# A Bell state in point-free style
-bell = (H & I) >> Cnot
-This expressive style emerged naturally from the library's design, highlighting Sedryx’s flexibility and underlying coherence.
-
-Visualization
-
-Sedryx supports both text-based and SVG-based visualization:
-
-Text output provides a quick, human-readable diagram, suitable for standard terminals.
-SVG output is ideal for Jupyter notebooks and provides a higher-quality, interactive visualization.
-This dual approach ensures that circuits remain easy to inspect across different workflows.
-
-Future Directions
-
-Sedryx currently focuses on the creation and manipulation of circuits. Planned future developments include:
-
-Integration with professional quantum circuit simulators as backends.
-Extended support for measurements, classical control, and advanced quantum operations.
-Optimization passes and circuit simplification tools.
-Conclusion
-
-Sedryx aims to provide a lightweight, expressive, and modular foundation for quantum circuit programming in Python.
-Its emphasis on first-class circuits, compositionality, and minimal but powerful abstractions offers a fresh, flexible approach to designing quantum algorithms.
-
-Whether you are experimenting with simple entanglement circuits or building the foundation for larger quantum algorithms, Sedryx strives to make the process elegant, intuitive, and fun.
-
-# Philosophy
-
-Sedryx is a lightweight quantum circuit construction library designed around the principles of composability, clarity, and expressiveness.
-Rather than being a full quantum computing platform, Sedryx focuses narrowly on the creative process of building and manipulating circuits, treating circuits themselves as first-class objects.
-
-This philosophy is grounded in a few key ideas:
-
-1. Circuits as First-Class Citizens
-In Sedryx, circuits can be reused, composed, and embedded into larger circuits as easily as gates.
-A user can define a Bell state circuit once, and apply it multiple times within larger designs without redundancy or loss of structure.
-This mirrors the natural way that quantum algorithms often reuse subroutines, and encourages modular thinking.
-
-# Define a Bell state
-bell = Circuit(2)
+### Bit Grouping and Application
+```python
 x, y = bell.all_bits()
-x >> H
-(x & y) >> Cnot
+(x & y) >> Cnot      # Two-qubit CNOT gate
+x >> (X, H, Z)       # Sequence of gates on qubit x
+```
 
-# Reuse Bell state twice
-example = Circuit(4)
-a, b, c, d = example.all_bits()
-(a & b) >> bell
-(c & d) >> bell
-2. Natural Syntax for Composition
-Sedryx emphasizes minimal, intuitive operators to build circuits:
+### Circuit Composition
+```python
+# Parallel composition
+double_bell = bell & bell   # 4-qubit circuit (Bell ⊗ Bell)
 
->> applies gates (or circuits) to bits.
-& groups bits or gates together for multi-arity operations.
-These operators encourage a point-free style of programming when desired, allowing circuits to be defined concisely without explicit reference to individual bits.
+# Sequential composition of gates as circuits
+composed = X >> H           # Returns a 2-qubit circuit: [X on q0] then [H on q1]
+```
 
-# Point-free Bell state definition
-bell = (H & I) >> Cnot
-This accidental discovery of point-free circuit composition highlights the expressive potential of the model: powerful abstractions arise naturally from a small set of consistent rules.
+### Defining Custom Gates
+```python
+def QFT(n):
+    qft = Circuit(n)
+    qubits = qft.all_bits()
+    # ... construct QFT logic ...
+    return qft.as_gate(f'QFT({n})')
 
-3. Clear Treatment of Qubits and Classical Bits
-Sedryx provides a unified way to specify both quantum and classical bits when building a circuit.
-Bits are displayed in the order they are defined, allowing full control over circuit layout, and hidden bits can be used when needed for internal computation without cluttering the visual representation.
+# Use it like any gate:
+(c0 & c1 & c2) >> QFT(3)
+```
 
-This explicit bit management supports fine-grained control without sacrificing simplicity.
+## Visualization
 
-4. Focus on Expressive, Readable Diagrams
-While visualization tools in Sedryx are currently basic, they prioritize readability and natural mapping from syntax to diagram.
-Circuit outputs are designed to be interpretable at a glance, both in plain text and SVG formats (ideal for Jupyter environments).
+Sedryx offers two rendering modes:
 
-This supports the broader aim of making quantum circuits as intuitive to construct and interpret as possible.
+- **SVG output** (ideal for Jupyter notebooks): crisp, scalable diagrams with hidden qubits indented.  
+- **ASCII art**: plain-text diagrams for terminal use (functional, though less detailed).
 
-Sedryx is an evolving project and does not aim to compete directly with large-scale quantum frameworks.
-Instead, it aspires to contribute ideas toward making quantum programming simpler, more modular, and more expressive, and to inspire future development in the field.
+```python
+from sedryx.visual import draw_svg, draw_ascii
+
+print(draw_ascii(bell))    # ASCII diagram
+display(draw_svg(bell))    # SVG in Jupyter
+```
+
+## Roadmap
+
+- **Simulator Backend**: Integration with Python-based quantum simulators (e.g., Qiskit, Cirq).  
+- **Parameterised Gates**: Native support for parameter sweeps and symbolic rotations.  
+- **Advanced Layouts**: Automatic qubit mapping and wire layout optimization.  
+- **Gate Libraries**: Prebuilt higher-level transforms (e.g., QFT, Grover’s diffuser).
+
+## Contributing
+
+Contributions are warmly welcomed. Please fork the repository on GitHub, submit issues for feature requests or bugs, and open pull requests. Ensure adherence to the existing code style and include tests for new functionality.
+
+## License
+
+Sedryx is released under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+Harness the expressive power of Sedryx to prototype, compose, and visualize quantum algorithms with ease—treating circuits truly as first-class citizens in Python.
