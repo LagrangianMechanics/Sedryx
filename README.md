@@ -122,3 +122,5 @@ Sedryx is released under the MIT License. See [LICENSE](LICENSE) for details.
 ---
 
 Harness the expressive power of Sedryx to prototype, compose, and visualize quantum algorithms with ease—treating circuits truly as first-class citizens in Python.
+
+README generated with assistance from ChatGPT; all code and design decisions are my own.
