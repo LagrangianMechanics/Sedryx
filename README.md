@@ -1,4 +1,4 @@
-**Sedryx**  
+*Sedryx**  
 *A Python Library for First-Class Quantum Circuit Construction*  
 
 ---
