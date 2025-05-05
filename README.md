@@ -75,7 +75,7 @@ x >> (X, H, Z)       # Sequence of gates on qubit x
 double_bell = bell & bell   # 4-qubit circuit (Bell ⊗ Bell)
 
 # Sequential composition of gates as circuits
-composed = X >> H           # Returns a 2-qubit circuit: [X on q0] then [H on q1]
+composed = X >> H           # Returns a 1-qubit circuit: [X on q0] then [H on q0]
 ```
 
 ### Defining Custom Gates
